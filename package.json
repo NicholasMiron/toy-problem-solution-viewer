@@ -1,0 +1,66 @@
+{
+  "name": "simple_boilerplate",
+  "version": "0.0.1",
+  "description": "A basic boilerplate for react/express apps",
+  "main": "index.js",
+  "scripts": {
+    "tests": "jest --runInBand --detectOpenHandles --forceExit",
+    "start": "nodemon server/index.js",
+    "build": "webpack --config ./webpack.config.js -w --mode production",
+    "build-one": "webpack --config ./webpack.config.js -w --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicholasMiron/Simple_Boilerplate.git"
+  },
+  "author": "Nicholas Miron <nicholasmiron@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicholasMiron/Simple_Boilerplate/issues"
+  },
+  "homepage": "https://github.com/NicholasMiron/Simple_Boilerplate#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cors": "^2.8.5",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.5.1",
+    "morgan": "^1.9.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
+    "enzyme": "^3.9.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.17.1",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.7.1",
+    "nodemon": "^1.18.11",
+    "style-loader": "^0.23.1",
+    "supertest": "^4.0.2",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "setupFiles": [
+      "./src/setupTests.js"
+    ]
+  }
+}
