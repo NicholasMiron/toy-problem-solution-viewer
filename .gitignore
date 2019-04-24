@@ -3,4 +3,5 @@ node_modules/
 .env
 npm 
 npm-debug.log
-dist/bundle.js
+dist
+coverage

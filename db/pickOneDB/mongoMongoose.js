@@ -4,7 +4,6 @@ require('dotenv').config();
 mongoose.Promise = global.Promise;
 
 // Get uri from Atlas and use password in .env
-// const uri = `mongodb+srv://nicholasmiron:${process.env.MONGO_DB_PASSWORD}`;
 const uri = '';
 mongoose.connect(uri, { useNewUrlParser: true });
 
@@ -20,5 +19,6 @@ const addNewPerson = (name, age) => {
   newPerson.save();
 };
 
+const getPerson = name => People.findOne({ name });
 
-module.exports = { addNewPerson };
+module.exports = { addNewPerson, getPerson };

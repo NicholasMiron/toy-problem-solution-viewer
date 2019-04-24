@@ -5,7 +5,7 @@ describe('Some scenario of tests below', () => {
   it('Should get a response from the server', (done) => {
     request(app).get('/')
       .then((response) => {
-        expect(response.statusCode).toExist();
+        expect(response.statusCode).toBeDefined();
         done();
       });
   });
