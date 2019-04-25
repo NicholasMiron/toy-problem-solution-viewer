@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "A basic boilerplate for react/express apps",
   "main": "index.js",
+  "engines": {
+    "node": ">=11"
+  },
   "scripts": {
     "tests": "jest --config=config/jest.config.js --runInBand --detectOpenHandles --collect-coverage --forceExit",
     "start": "nodemon server/index.js",
@@ -58,6 +61,7 @@
     "pm2": "^3.5.0",
     "style-loader": "^0.23.1",
     "supertest": "^4.0.2",
+    "uglifyjs-webpack-plugin": "^2.1.2",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.0"
   },
