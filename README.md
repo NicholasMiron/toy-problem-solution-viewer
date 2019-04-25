@@ -19,11 +19,11 @@ To Use A Database:
 To Deploy:
 1. Choose between Docker/EB or pm2
 2. If Docker
-  a. Remove ecosystem.config.js from config
-  b. npm uninstall pm2 --save-dev
-  c. npm run docker
-  d. eb init
-  e. eb create
+  a. Remove ecosystem.config.js from config\n
+  b. npm uninstall pm2 --save-dev\n
+  c. npm run docker\n
+  d. eb init\n
+  e. eb create\n
 3. If pm2
   a. Remove Dockerfile from config
   b. Set up ec2 instance
