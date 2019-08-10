@@ -1,0 +1,41 @@
+// An array of tuples that contains github handle and student name
+// EX: [['doeJane', 'Jane Doe'], ['JohnDoe', 'John Doe'], ..., ['MickeyDs', 'Ronald McDonald']]
+// Add in all students for all cohorts.
+// The function will filter students who haven't made a pull request
+
+module.exports = [
+  ['jkcryptolock', 'John Connolly'],
+  ['ArohanD', 'Arohan Dutt'],
+  ['Jibbscript', 'Gibran Iqbal'],
+  ['jxkim', 'Julia Kim'],
+  ['wiggitywhitney', 'Whitney Lee'],
+  ['SeanMcCarthy3223', 'Sean McCarthy'],
+  ['JeffSalinas', 'Jeffrey Salinas'],
+  ['landon-baker', 'Landon Baker'],
+  ['kbench09', 'Kevin Bench'],
+  ['Michael-Bergeron', 'Michael Bergeron'],
+  ['evelynbinkard', 'Evelyn Binkard'],
+  ['glblaser', 'Gary Blaser'],
+  ['rcalimlim', 'Ross Calimlim'],
+  ['VarCannon', 'Trevor Cannon'],
+  ['hadleyac', 'Hadley Crowl'],
+  ['bpdavitt', 'Brendan Davitt'],
+  ['MitchellDill', 'Mitchell Dill'],
+  ['Jordielove', 'Jordan Dillard'],
+  ['Eisenbartl', 'Laine Eisenbart'],
+  ['baembry', 'Brian Embry'],
+  ['chrisfauries', 'Chris Fauries'],
+  ['zonagilreath', 'Bryson (Zona) Gilbreath'],
+  ['hhendrycks', 'Hannah Hendrycks'],
+  ['dorishui', 'Doris Hui'],
+  ['justanotherhuman', 'Justan Human'],
+  ['ibrahimjabr12', 'Ibrahim jabr'],
+  ['bleafman', 'Brandon Leafman'],
+  ['cnebs', 'Charles Neblett'],
+  ['dongjae93', 'DongJae Park'],
+  ['brookesnellings', 'Brooke Snellings'],
+  ['tstendara', 'Tyler Stendara'],
+  ['garrettwelson', 'Garrett Welson'],
+  ['mileszander', 'Miles Zander'],
+  ['NicholasMiron', 'Nicholas Miron'],
+];

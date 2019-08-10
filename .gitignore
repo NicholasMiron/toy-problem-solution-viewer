@@ -5,3 +5,5 @@ npm
 npm-debug.log
 dist
 coverage
+package-lock.json
+.vscode
