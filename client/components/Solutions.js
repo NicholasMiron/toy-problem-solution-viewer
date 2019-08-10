@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import Axios from 'axios';
+import Prism from 'prismjs';
 
 import Cohorts from './Cohorts';
 import Problems from './Problems';
@@ -10,11 +11,14 @@ class Solutions extends Component {
     super(props);
     this.state = {
       cohorts: [],
+      solutions: [],
       page: 'cohorts',
+      currentCohort: '',
     };
 
-    this.getProblemList = this.getProblemList.bind(this);
+    this.getListOfProblems = this.getListOfProblems.bind(this);
     this.updateProblems = this.updateProblems.bind(this);
+    this.getSolutionsForProblem = this.getSolutionsForProblem.bind(this);
   }
 
   componentDidMount() {
@@ -28,18 +32,24 @@ class Solutions extends Component {
       });
   }
 
-  getProblemList(cohort) {
-    Axios.get(`/api/cohorts/${cohort}/problems`)
+  getSolutionsForProblem(problem) {
+    Axios.get(`/api/cohorts/${this.state.currentCohort}/problems/${problem}`)
       .then(({ data }) => {
-        this.setState({ problems: data, page: 'problems' });
+        this.setState({ solutions: data, page: 'solutions' });
       });
   }
 
-  updateProblems(cohort) {
-    const { problems } = this.state;
-    Axios.get(`/api/cohorts/${cohort}/problems/update`)
-      .then((result) => {
-        console.log(result, problems);
+  getListOfProblems({ cohortPrefix }) {
+    Axios.get(`/api/cohorts/${cohortPrefix}/problems`)
+      .then(({ data }) => {
+        this.setState({ problems: data, page: 'problems', currentCohort: cohortPrefix });
+      });
+  }
+
+  updateProblems({ cohortPrefix }) {
+    Axios.get(`/api/cohorts/${cohortPrefix}/problems/update`)
+      .then((response) => {
+        if (response.status === 200) this.updateProblems({ cohortPrefix });
       });
   }
 
@@ -48,7 +58,7 @@ class Solutions extends Component {
       return (
         <Cohorts
           cohorts={this.state.cohorts}
-          handleCohortClick={this.getProblemList}
+          handleCohortClick={this.getListOfProblems}
           showUpdateProblems={true}
           updateProblems={this.updateProblems}
         />
@@ -56,7 +66,21 @@ class Solutions extends Component {
     }
     if (this.state.page === 'problems') {
       return (
-        <Problems problems={this.state.problems}/>
+        <Problems problems={this.state.problems} showSolutions={this.getSolutionsForProblem}/>
+      );
+    }
+    if (this.state.page === 'solutions') {
+      return (
+        <div id={'submissions'}>
+          {this.state.solutions.map((submission, i) => {
+            const html = Prism.highlight(submission.solution, Prism.languages.javascript, 'javascript');
+            return (<div className={'submission'} key={i}>
+                <h1>{submission.username}</h1>
+                <code dangerouslySetInnerHTML={{ __html: html }}></code>
+              </div>
+            );
+          })}
+        </div>
       );
     }
     return <></>;

@@ -92,6 +92,7 @@ const getComments = (allCommentUrls, problem) => (
 );
 
 // Check if a pull request has any passing solutions and return it if it does.
+// It seems to occasionally not get everything. I'm not sure why.
 // TODO Simplify the headers for each request
 // TODO Break each Axios call into its own function
 const updateCohortProblems = (cohort, lastPull) => {
@@ -120,8 +121,8 @@ const updateCohortProblems = (cohort, lastPull) => {
       return Axios(commentHeader)
         .then((commentResponse) => {
           const solutionsPromise = commentResponse.data.map((comment) => {
-            const [summary] = comment.body.match(/(?<=summary:\W)\d{1,3}\W\/\W\d{1,3}/g);
-            const passing = evaluateFractionString(summary) >= 1;
+            const summary = comment.body.match(/(?<=summary:\W)\d{1,3}\W\/\W\d{1,3}/g);
+            const passing = summary ? evaluateFractionString(summary[0]) >= 1 : false;
             const problemName = passing ? comment.body.match(/(?<=Problem:\W)\D{1,}(?=\n)/g)[0].trim() : null;
 
             const solutionHeader = {
@@ -133,7 +134,7 @@ const updateCohortProblems = (cohort, lastPull) => {
             };
 
             // If a comment has a passing solution get the solution
-            return passing ? Axios(solutionHeader).then((html) => {
+            return passing ? Axios(solutionHeader).catch(err => console.log('ERROR: checking solution', err)).then((html) => {
               const solutionCode = Buffer.from(html.data.content, 'base64').toString();
               return { githubHandle, problemName, solutionCode };
             }) : null;

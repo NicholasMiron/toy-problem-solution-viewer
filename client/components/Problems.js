@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Problems = ({ problems }) => (
+const Problems = ({ problems, showSolutions }) => (
     <div className={'column'}>
       {problems.map((problem, i) => (
         <div className={'columnItem shortItem'} key={i}>
-          <div>{problem}</div>
+          <div onClick={() => showSolutions(problem)}>{problem}</div>
         </div>
       ))}
     </div>
@@ -13,6 +13,7 @@ const Problems = ({ problems }) => (
 
 Problems.propTypes = {
   problems: PropTypes.func,
+  showSolutions: PropTypes.func,
 };
 
 export default Problems;

@@ -7,78 +7,25 @@ const { Schema } = mongoose;
 
 mongoose.connect('mongodb://localhost:27017/toyProblems', { useNewUrlParser: true, useFindAndModify: true });
 
-const solutionSchema = {
+const solutionSchema = new Schema({
   username: {
-    type: String, unique: true, required: true,
+    type: String, required: true, index: false,
   },
-  solutin: {
-    type: String, unique: true, required: true,
+  solution: {
+    type: String, required: true, index: false,
   },
-};
+});
 
 // This is hideous
 // TODO: Split off to a different file
 const CohortSchema = new Schema({
   cohortPrefix: {
-    type: String, unique: true, required: true,
+    type: String, unique: true, required: true, index: true,
   },
-  lastPull: Number,
+  lastPull: { type: Number, default: 0 },
   students: [new Schema({ name: String, githubHandle: String })],
-  solvedSolutions: {
-    allAnagrams: [],
-    asyncMap: [],
-    balancedParens: [],
-    binarySearchArray: [],
-    bubbleSort: [],
-    characterFrequency: [],
-    coinSums: [],
-    commonAncestor: [],
-    commonCharacters: [],
-    composePipe: [],
-    constantTimeStackMin: [],
-    deepEquality: [],
-    doublyLinkedList: [],
-    editDistance: [],
-    emailRegex: [],
-    evenOccurrence: [],
-    fractionConverter: [],
-    functionBind: [],
-    hashTable: [],
-    hashTableResizing: [],
-    insertionSort: [],
-    integerGenerator: [],
-    integerReverse: [],
-    islandCount: [],
-    isSubsetOf: [],
-    largestProductOfThree: [],
-    linkedList: [],
-    linkedListCycles: [],
-    linkedListIntersection: [],
-    longestPalindrome: [],
-    longestRun: [],
-    lruCache: [],
-    mergeSort: [],
-    missingNumber: [],
-    nonrepeatedCharacter: [],
-    nthFibonacci: [],
-    numberToEnglish: [],
-    powerSet: [],
-    primeTester: [],
-    queueStack: [],
-    quicksort: [],
-    rangeClass: [],
-    rockPaperScissors: [],
-    romanNumeralTranslator: [],
-    rotateMatrix: [],
-    shuffleDeck: [],
-    sudokuChecker: [],
-    sumArray: [],
-    telephoneWords: [],
-    tree: [],
-    treeBFSelect: [],
-    treeCountLeaves: [],
-    treeDFSelect: [],
-  },
+  solvedSolutions: [new Schema({ problem: String, solutions: [solutionSchema] }),
+  ],
 }, { strict: false });
 
 const CohortModel = mongoose.model('Cohort', CohortSchema);
@@ -130,53 +77,38 @@ const getAllStudents = cohort => (
 
 
 // Problem Queries
-// const addProblemSolution = (cohort, problem, username, solution) => {
-//   console.log(cohort, username, problem, solution);
-//   return CohortModel.findOne({ cohortPrefix: cohort })
-//     .then((cohortDoc) => {
-//       cohortDoc.solvedSolutions[problem] = cohortDoc.solvedSolutions[problem] || {};
-//       cohortDoc.solvedSolutions[problem][username] = solution;
 
-//       console.log(cohortDoc);
-//       return cohortDoc.save();
-//     })
-//     .catch((err) => {
-//       console.log('Save solved solutin ERROR', err);
-//     });
-// };
+// This mostly works. It will add multiple of the same user to the same problem
+// I might need to filter this later
+const addProblemSolution = (cohortPrefix, problem, username, solution) => (
+  CohortModel.findOneAndUpdate(
+    { cohortPrefix, 'solvedSolutions.problem': problem },
+    { $push: { 'solvedSolutions.$.solutions': { username, solution } } },
+  )
+    .then((doc) => {
+      if (!doc) {
+        return CohortModel.findOneAndUpdate({ cohortPrefix },
+          { $push: { solvedSolutions: { problem, solutions: [] } } })
+          .then(() => CohortModel.findOneAndUpdate(
+            { cohortPrefix, 'solvedSolutions.problem': problem },
+            { $push: { 'solvedSolutions.$.solutions': { username, solution } } },
+          ));
+      }
+      return doc;
+    })
+    .catch(err => console.log(err))
+);
 
-const addProblemSolution = (cohort, problem, username, solution) => {
-  console.log(cohort, username, problem);
+const getAllProblems = cohort => CohortModel.findOne({ cohortPrefix: cohort });
 
-  // return CohortModel.findOne({ cohortPrefix: cohort })
-  //   .then((doc) => {
-  //     doc.solvedSolutions = doc.solvedSolutions || {};
-  //     doc.solvedSolutions[problem] = doc.solvedSolutions[problem] || {};
-  //     doc.solvedSolutions[problem][username] = solution;
-  //     console.log(doc);
-  //     return doc.save();
-  //   });
-  const solvedSolutions = {};
-  solvedSolutions[problem] = {};
-  solvedSolutions[problem][username] = solution;
-
-  return CohortModel.findOne(
-    { cohortPrefix: cohort, solvedSolutions: problem },
-  ).then(console.log);
-};
-
-// const addProblemSolution = (cohortPrefix, problem, username, solution) => (
-//   CohortModel.findOne({ cohortPrefix })
-//     .then((doc) => {
-//       if (!doc.solvedSolutions[problem]) doc.set({});
-//       doc.solvedSolutions[problem] = doc.solvedSolutions[problem] || {};
-//       doc.solvedSolutions[problem][username] = doc.solvedSolutions[problem][username];
-//       doc.save();
-//     })
-// );
-
+// Pull Request Queries
 const getLastPullCompleted = cohort => CohortModel.findOne({ cohortPrefix: cohort })
   .then(doc => doc.lastPull);
+
+const incrementPull = cohort => CohortModel.findOneAndUpdate(
+  { cohortPrefix: cohort },
+  { $inc: { lastPull: 1 } },
+);
 
 module.exports = {
   addStudent,
@@ -189,6 +121,7 @@ module.exports = {
   removeCohort,
   updateCohortname,
   addProblemSolution,
-  // getProblemSolutions,
+  getAllProblems,
   getLastPullCompleted,
+  incrementPull,
 };
