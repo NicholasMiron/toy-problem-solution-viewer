@@ -3,10 +3,14 @@
   --accent-one: #05386B;
 }
 
+@import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
+
 body, html {
   padding: 0;
   margin: 0;
   background-color: var(--accent-one);
+  font-family: 'Oswald', sans-serif;
+
 }
 
 #wrapper {
@@ -88,14 +92,77 @@ h1 {
   align-items: center;
 }
 
-.columnItem:nth-child(3n + 1) {
-  background-color: rgb(64, 132, 199);
+.name {
+  font-size: 45px;
 }
 
-.columnItem:nth-child(3n + 2) {
-  background-color: rgb(54, 129, 47);
+.columnItem:nth-child(4n + 1) {
+  background-color: #E27D60;
 }
 
-.columnItem:nth-child(3n + 3) {
-  background-color: rgb(129, 100, 107);
+.columnItem:nth-child(4n + 2) {
+  background-color: #85DCB0;
+}
+
+.columnItem:nth-child(4n + 3) {
+  background-color: #EAA87C;
+}
+.columnItem:nth-child(4n + 4) {
+  background-color: #C38D9E;
+}
+
+.bigParent {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lastPull {
+  font-size: 45px;
+  color: white;
+  display: flex;
+
+}
+
+.loading {
+  margin: 20px;
+  height: 25px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.dot {
+  float: left;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  background: white;
+  border-radius: 50%;
+  animation: loadingFade 1.5s infinite ease-in;
+  box-shadow: 0 0 2px black;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.dot:nth-child(2) {
+  animation-delay: .1s;
+}
+.dot:nth-child(3) {
+  animation-delay: .2s;
+}
+.dot:nth-child(4) {
+  animation-delay: .3s;
+}
+.dot:nth-child(5) {
+  animation-delay: .4s;
+}
+
+@keyframes loadingFade {
+  0% { opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0; }
 }

@@ -24,6 +24,7 @@ const updateCohortProblems = (cohort, lastPull) => {
   // Get the pull request
   // We need to get the pull request first to get the username of the submission
   return Axios(pullHeader)
+    .catch(err => console.log(err))
     .then((pullResponse) => {
       const githubHandle = pullResponse.data.head.user.login;
 
@@ -38,6 +39,7 @@ const updateCohortProblems = (cohort, lastPull) => {
       // Get the comments on that pull request
       // This is nested so that we can grab the github handle from above later on
       return Axios(commentHeader)
+        .catch(err => console.log(err))
         .then((commentResponse) => {
           // Go through all comments on the pull request and check for any passing solution
           const solutionsPromise = commentResponse.data.map((comment) => {
@@ -59,9 +61,13 @@ const updateCohortProblems = (cohort, lastPull) => {
               return { githubHandle, problemName, solutionCode };
             }) : null;
           });
-
+          console.log(solutionsPromise);
           // Wait for all solved solutions to come back
-          return Promise.all(solutionsPromise);
+          return Promise.all(solutionsPromise)
+            .then((result) => {
+              console.log(result);
+              return result;
+            });
         })
         .catch(error => error);
     });

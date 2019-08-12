@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import '../prism.css';
-
 import Axios from 'axios';
+
 import Cohorts from './Cohorts';
 import Problems from './Problems';
 import Solutions from './Solutions';
+
+import '../prism.css';
 
 
 class App extends Component {
@@ -16,6 +17,7 @@ class App extends Component {
       cohorts: [],
       problems: [],
       solutions: [],
+      lastPull: 0,
     };
 
     this.getCohortNames = this.getCohortNames.bind(this);
@@ -67,19 +69,40 @@ class App extends Component {
   callUpdateProblem(cohort) {
     Axios.get(`/api/cohorts/${cohort}/problems/update`)
       .then((response) => {
-        if (response.status === 200) this.callUpdateProblem(cohort);
-      }).catch(() => this.setState({ page: 'home' }));
+        if (response.status === 200) {
+          this.setState({ lastPull: response.data }, () => this.callUpdateProblem(cohort));
+        }
+      }).catch((err) => {
+        this.setState({ page: 'home' });
+        console.log(err);
+      });
   }
 
 
   addCohort() {
     const element = document.getElementById('addCohort');
     Axios.post(`/api/cohorts/${element.value}`)
-      .then(this.getCohortNames);
+      .then(() => {
+        this.getCohortNames();
+      })
+      .catch((err) => {
+        switch (err.response.status) {
+          case 400:
+            alert('Incorrectly Formatted');
+            break;
+          case 409:
+            alert('Already Exists');
+            break;
+          default:
+            alert('Failed to post');
+            break;
+        }
+      })
+      .finally(() => { element.value = ''; });
   }
 
   removeCohort({ cohortPrefix }) {
-    if (window.confirm('This action can\'t be undone! \n Do you still wish to proceed?')) {
+    if (window.confirm('This action can\'t be undone! Do you still wish to proceed?')) {
       Axios.delete(`/api/cohorts/${cohortPrefix}`)
         .then(this.getCohortNames);
     }
@@ -112,7 +135,19 @@ class App extends Component {
       );
     }
     return (
-      <div>Loading...</div>
+      <div className='bigParent'>
+        <div className='lastPull'>
+          <span>Getting Info From Pull Request </span>
+          <span className="loading">
+            <div className='dot'></div>
+            <div className='dot'></div>
+            <div className='dot'></div>
+            <div className='dot'></div>
+            <div className='dot'></div>
+          </span>
+          <span>{`${this.state.lastPull}`}</span>
+        </div>
+      </div>
     );
   }
 }

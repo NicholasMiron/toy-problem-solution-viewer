@@ -23,8 +23,9 @@ app.get('/api/cohorts', (req, res) => {
 
 // Add cohort
 app.post('/api/cohorts/:cohort/', (req, res, next) => {
-  const { cohort } = req.params;
+  let { cohort } = req.params;
 
+  cohort = cohort.toLowerCase();
   // Must match the hr standard naming convention
   if (!/^hr(atx|nyc|hrr|sf|phx|la|rpt)\d{1,3}$/gi.test(cohort)) {
     res.sendStatus(400);
@@ -40,7 +41,7 @@ app.post('/api/cohorts/:cohort/', (req, res, next) => {
       })
       .then(() => db.getAllCohorts())
       .then(data => res.send(data))
-      .catch(() => res.sendStatus(400));
+      .catch(() => res.sendStatus(401));
   }
 });
 
@@ -60,9 +61,13 @@ app.delete('/api/cohorts/:cohort', (req, res) => {
 // If you break this you are on your own
 app.get('/api/cohorts/:cohort/problems/update', (req, res) => {
   const { cohort } = req.params;
+  let lastPull = 0;
 
   db.getLastPullCompleted(cohort)
-    .then(lastPullCompleted => updateCohortProblems(cohort, lastPullCompleted))
+    .then((lastPullCompleted) => {
+      lastPull = lastPullCompleted;
+      return updateCohortProblems(cohort, lastPullCompleted);
+    })
     .then(solutions => Promise.all(solutions.filter(solution => (
       (solution && solution.githubHandle && solution.problemName && solution.solutionCode)))
       .map((solution) => {
@@ -70,8 +75,11 @@ app.get('/api/cohorts/:cohort/problems/update', (req, res) => {
         return db.addProblemSolution(cohort, problemName, githubHandle, solutionCode);
       })))
     .then(() => db.incrementPull(cohort))
-    .then(() => res.sendStatus(200))
-    .catch(() => res.sendStatus(400));
+    .then(() => res.send(JSON.stringify(lastPull)))
+    .catch((err) => {
+      res.sendStatus(400);
+      console.log(err);
+    });
 });
 
 // Get all problem names for a cohort in an array
