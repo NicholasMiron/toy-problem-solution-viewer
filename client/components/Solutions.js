@@ -35,7 +35,14 @@ class Solutions extends Component {
   getSolutionsForProblem(problem) {
     Axios.get(`/api/cohorts/${this.state.currentCohort}/problems/${problem}`)
       .then(({ data }) => {
-        this.setState({ solutions: data, page: 'solutions' });
+        const created = {};
+        const solutions = data.reverse().filter((solution) => {
+          if (!created[solution.username]) {
+            created[solution.username] = 1;
+            return true;
+          } return false;
+        });
+        this.setState({ solutions, page: 'solutions' });
       });
   }
 
@@ -47,10 +54,12 @@ class Solutions extends Component {
   }
 
   updateProblems({ cohortPrefix }) {
+    console.log('fired', cohortPrefix);
     Axios.get(`/api/cohorts/${cohortPrefix}/problems/update`)
       .then((response) => {
+        console.log(response);
         if (response.status === 200) this.updateProblems({ cohortPrefix });
-      });
+      }).catch(err => console.log(err));
   }
 
   render() {

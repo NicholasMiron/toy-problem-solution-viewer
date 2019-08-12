@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const { Schema } = mongoose;
 mongoose.Promise = global.Promise;
 
-const { Schema } = mongoose;
-
-mongoose.connect('mongodb://localhost:27017/toyProblems', { useNewUrlParser: true, useFindAndModify: true });
+mongoose.connect('mongodb://localhost:27017/toyProblems', { useNewUrlParser: true, useFindAndModify: false });
 
 const solutionSchema = new Schema({
   username: {
@@ -16,8 +15,6 @@ const solutionSchema = new Schema({
   },
 });
 
-// This is hideous
-// TODO: Split off to a different file
 const CohortSchema = new Schema({
   cohortPrefix: {
     type: String, unique: true, required: true, index: true,
@@ -30,7 +27,6 @@ const CohortSchema = new Schema({
 
 const CohortModel = mongoose.model('Cohort', CohortSchema);
 
-// TODO: Move queries to another file?
 
 // Cohort Queries
 const getAllCohorts = () => CohortModel.find({}).select('cohortPrefix -_id');
@@ -79,7 +75,6 @@ const getAllStudents = cohort => (
 // Problem Queries
 
 // This mostly works. It will add multiple of the same user to the same problem
-// I might need to filter this later
 const addProblemSolution = (cohortPrefix, problem, username, solution) => (
   CohortModel.findOneAndUpdate(
     { cohortPrefix, 'solvedSolutions.problem': problem },
@@ -96,9 +91,10 @@ const addProblemSolution = (cohortPrefix, problem, username, solution) => (
       }
       return doc;
     })
-    .catch(err => console.log(err))
+    .catch()
 );
 
+// Get everything from one cohort
 const getAllProblems = cohort => CohortModel.findOne({ cohortPrefix: cohort });
 
 // Pull Request Queries
