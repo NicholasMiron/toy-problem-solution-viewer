@@ -29,19 +29,19 @@ app.post('/api/cohorts/:cohort/', (req, res, next) => {
   if (!/^hr(atx|nyc|hrr|sf|phx|la|rpt)\d{1,3}$/gi.test(cohort)) {
     res.sendStatus(400);
     next();
+  } else {
+    db.getCohort(cohort)
+      .then((result) => {
+        if (result) { // If we find something break
+          res.send(409);
+          next();
+        }
+        return db.addCohort(cohort);
+      })
+      .then(() => db.getAllCohorts())
+      .then(data => res.send(data))
+      .catch(() => res.sendStatus(400));
   }
-
-  db.getCohort(cohort)
-    .then((result) => {
-      if (result) { // If we find something break
-        res.send(409);
-        next();
-      }
-      return db.addCohort(cohort);
-    })
-    .then(() => db.getAllCohorts())
-    .then(data => res.send(data))
-    .catch(() => res.sendStatus(400));
 });
 
 // Remove cohort
