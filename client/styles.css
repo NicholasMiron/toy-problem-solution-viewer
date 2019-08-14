@@ -54,6 +54,15 @@ button, input {
   margin: 20px;
 }
 
+button {
+  box-shadow: 2px 2px black;
+}
+
+button:focus {
+  box-shadow: 0 0;
+  background-color: rgb(223, 223, 223);
+}
+
 button, input  {
   font-size: 1.5em;
 }
@@ -94,6 +103,10 @@ h1 {
 
 .name {
   font-size: 45px;
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 .columnItem:nth-child(4n + 1) {
@@ -165,4 +178,13 @@ h1 {
   0% { opacity: 0; }
   50% { opacity: 0.8; }
   100% { opacity: 0; }
+}
+
+#goHome {
+  position: fixed;
+  bottom: 50;
+  right: 50;
+  width: 100px;
+  height: 50px;
+  color: red;
 }

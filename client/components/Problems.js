@@ -5,7 +5,7 @@ const Problems = ({ problems, showSolutions }) => (
     <div className={'column'}>
       {problems.map((problem, i) => (
         <div className={'columnItem shortItem'} key={i}>
-          <div className={'name'} onClick={() => showSolutions(problem)}>{problem}</div>
+          <div className={'name clickable'} onClick={() => showSolutions(problem)}>{problem}</div>
         </div>
       ))}
     </div>

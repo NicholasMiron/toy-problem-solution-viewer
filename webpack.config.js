@@ -41,7 +41,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'An App Full of Stars',
+      title: 'Toy Problem Solutions',
       template: path.join(__dirname, 'templates/index.ejs'),
       inject: 'body',
       filename: 'index.html',

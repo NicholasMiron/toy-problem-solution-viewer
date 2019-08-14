@@ -71,15 +71,15 @@ app.get('/api/cohorts/:cohort/problems/update', (req, res) => {
     .then(solutions => Promise.all(solutions.filter(solution => (
       (solution && solution.githubHandle && solution.problemName && solution.solutionCode)))
       .map((solution) => {
-        const { problemName, githubHandle, solutionCode } = solution;
+        const { problemName, githubHandle } = solution;
+        let { solutionCode } = solution;
+        // If code not displaying properly remove line below
+        solutionCode = solutionCode.replace(/(\/\*(.*?)\*\/)|(\/\/.*?\n)/gis, '').trim();
         return db.addProblemSolution(cohort, problemName, githubHandle, solutionCode);
       })))
     .then(() => db.incrementPull(cohort))
     .then(() => res.send(JSON.stringify(lastPull)))
-    .catch((err) => {
-      res.sendStatus(400);
-      console.log(err);
-    });
+    .catch(() => res.sendStatus(400));
 });
 
 // Get all problem names for a cohort in an array

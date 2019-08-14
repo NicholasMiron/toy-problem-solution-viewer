@@ -20,6 +20,8 @@ class App extends Component {
       lastPull: 0,
     };
 
+    this.initalState = Object.assign({}, this.state);
+
     this.getCohortNames = this.getCohortNames.bind(this);
     this.updateProblems = this.updateProblems.bind(this);
     this.showProblems = this.showProblems.bind(this);
@@ -72,10 +74,8 @@ class App extends Component {
         if (response.status === 200) {
           this.setState({ lastPull: response.data }, () => this.callUpdateProblem(cohort));
         }
-      }).catch((err) => {
-        this.setState({ page: 'home' });
-        console.log(err);
-      });
+      })
+      .catch(() => this.setState({ page: 'home' }));
   }
 
 
@@ -108,30 +108,43 @@ class App extends Component {
     }
   }
 
+  goHome() {
+    this.setState(this.initalState);
+  }
+
 
   render() {
     if (this.state.page === 'home') {
       return (
-        <Cohorts
-          cohorts={this.state.cohorts}
-          showProblems={this.showProblems}
-          updateProblems={this.updateProblems}
-          addCohort={this.addCohort}
-          removeCohort={this.removeCohort}
-        />
+        <>
+          <Cohorts
+            cohorts={this.state.cohorts}
+            showProblems={this.showProblems}
+            updateProblems={this.updateProblems}
+            addCohort={this.addCohort}
+            removeCohort={this.removeCohort}
+          />
+          {/* <button id={'goHome'} onClick={this.goHome}>Home</button> */}
+        </>
       );
     }
     if (this.state.page === 'problems') {
       return (
-        <Problems
-          problems={this.state.problems}
-          showSolutions={this.showSolutions}
-        />
+        <>
+          <Problems
+            problems={this.state.problems}
+            showSolutions={this.showSolutions}
+          />
+          {/* <button id={'goHome'} onClick={this.goHome}>Home</button> */}
+        </>
       );
     }
     if (this.state.page === 'solutions') {
       return (
-        <Solutions solutions={this.state.solutions}/>
+        <>
+          <Solutions solutions={this.state.solutions}/>
+          {/* <button id={'goHome'} onClick={this.goHome}>Home</button> */}
+        </>
       );
     }
     return (

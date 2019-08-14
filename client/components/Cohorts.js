@@ -12,9 +12,9 @@ const Cohorts = ({
       {cohorts.map((cohort, i) => (
         <div className={'columnItem shortItem'} key={i}>
           <div className={'name'} onClick={() => showProblems(cohort)}>{cohort.cohortPrefix}</div>
-          <button onClick={() => showProblems(cohort)}>Problems</button>
-          <button onClick={() => updateProblems(cohort)}>Update Problems</button>
-          <button className={'remove'} onClick={() => removeCohort(cohort)}>Remove Cohort</button>
+          <button className={'clickable'} onClick={() => showProblems(cohort)}>Problems</button>
+          <button className={'clickable'} onClick={() => updateProblems(cohort)}>Update Problems</button>
+          <button className={'remove clickable'} onClick={() => removeCohort(cohort)}>Remove Cohort</button>
         </div>
       ))}
       <div className={'columnItem shortItem'}>
